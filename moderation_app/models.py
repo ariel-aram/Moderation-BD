@@ -16,3 +16,11 @@ class Warning(models.Model):
 
     def __str__(self):
         return f"Warning(guild={self.guild_id}, user={self.user_id}, reason={self.reason!r})"
+
+
+class GuildConfig(models.Model):
+    guild_id = models.BigIntegerField(unique=True)
+    muted_role_id = models.BigIntegerField(null=True, blank=True)
+
+    def __str__(self):
+        return f"GuildConfig(guild={self.guild_id}, muted_role={self.muted_role_id})"

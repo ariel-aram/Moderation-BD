@@ -6,7 +6,7 @@ from discord import app_commands
 from discord.ext import commands
 from discord.utils import get
 
-from ..models import Warning
+from ..models import GuildConfig, Warning
 
 if TYPE_CHECKING:
     from ballsdex.core.bot import BallsDexBot
@@ -83,8 +83,9 @@ class Moderation(commands.Cog):
                 "You don't have permission to manage messages.", ephemeral=True
             )
 
+        await interaction.response.defer(ephemeral=True)
         deleted = await interaction.channel.purge(limit=amount)
-        await interaction.response.send_message(f"Deleted {len(deleted)} messages.", ephemeral=True)
+        await interaction.followup.send(f"Deleted {len(deleted)} messages.", ephemeral=True)
 
     @app_commands.command(name="mute", description="Mute a user.")
     async def mute(
@@ -101,11 +102,20 @@ class Moderation(commands.Cog):
                 "You can't mute this member due to role hierarchy.", ephemeral=True
             )
 
-        muted_role = get(interaction.guild.roles, name="Muted")
+        config, _ = await GuildConfig.objects.aget_or_create(guild_id=interaction.guild.id)
+        muted_role = None
+
+        if config.muted_role_id:
+            muted_role = interaction.guild.get_role(config.muted_role_id)
+
         if not muted_role:
-            muted_role = await interaction.guild.create_role(name="Muted")
-            for channel in interaction.guild.channels:
-                await channel.set_permissions(muted_role, send_messages=False, speak=False)
+            muted_role = get(interaction.guild.roles, name="Muted")
+            if not muted_role:
+                muted_role = await interaction.guild.create_role(name="Muted")
+                for channel in interaction.guild.channels:
+                    await channel.set_permissions(muted_role, send_messages=False, speak=False)
+            config.muted_role_id = muted_role.id
+            await config.asave()
 
         await member.add_roles(muted_role, reason=reason)
         await interaction.response.send_message(f"{member.mention} has been muted. Reason: {reason}")
@@ -115,12 +125,30 @@ class Moderation(commands.Cog):
         if not interaction.user.guild_permissions.manage_roles:
             return await interaction.response.send_message("You don't have permission to manage roles.", ephemeral=True)
 
-        muted_role = get(interaction.guild.roles, name="Muted")
+        config = await GuildConfig.objects.filter(guild_id=interaction.guild.id).afirst()
+        muted_role = None
+
+        if config and config.muted_role_id:
+            muted_role = interaction.guild.get_role(config.muted_role_id)
+
+        if not muted_role:
+            muted_role = get(interaction.guild.roles, name="Muted")
+
         if muted_role and muted_role in member.roles:
             await member.remove_roles(muted_role)
             await interaction.response.send_message(f"{member.mention} has been unmuted.")
         else:
             await interaction.response.send_message("User is not muted.")
+
+    @app_commands.command(name="setmutedrole", description="Set the role used for muting members.")
+    async def setmutedrole(self, interaction: discord.Interaction["BallsDexBot"], role: discord.Role):
+        if not interaction.user.guild_permissions.manage_roles:
+            return await interaction.response.send_message("You don't have permission to manage roles.", ephemeral=True)
+
+        config, _ = await GuildConfig.objects.aget_or_create(guild_id=interaction.guild.id)
+        config.muted_role_id = role.id
+        await config.asave()
+        await interaction.response.send_message(f"Muted role set to {role.mention}.")
 
     @app_commands.command(name="warn", description="Warn a user.")
     async def warn(

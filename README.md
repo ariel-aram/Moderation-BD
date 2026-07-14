@@ -27,6 +27,7 @@ If you leave these permissions disabled, then bye bye, get out of this repositor
 | `/unban` | Unban a user by tag (Explosives#6969) |
 | `/mute` | Mute a user with a "Muted" role |
 | `/unmute` | Unmute a user |
+| `/setmutedrole` | Set the role used for muting members |
 | `/warn` | Warn a user (persisted in database) |
 | `/warnings` | List warnings for a user |
 | `/clearwarnings` | Clear all warnings for a user |
@@ -44,7 +45,7 @@ Add the following to your `config/extra.toml`:
 
 ```toml
 [[ballsdex.packages]]
-location = "git+https://github.com/aramhosting/Moderation-BD.git==1.0.0"
+location = "git+https://github.com/aramhosting/Moderation-BD.git==1.1.0"
 path = "moderation_app"
 enabled = true
 ```
