@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import GuildConfig, Warning
+from .models import ModerationConfig, Warning
 
 
 @admin.register(Warning)
@@ -11,7 +11,7 @@ class WarningAdmin(admin.ModelAdmin):
     readonly_fields = ("created_at",)
 
 
-@admin.register(GuildConfig)
-class GuildConfigAdmin(admin.ModelAdmin):
+@admin.register(ModerationConfig)
+class ModerationConfigAdmin(admin.ModelAdmin):
     list_display = ("guild_id", "muted_role_id")
     search_fields = ("guild_id",)

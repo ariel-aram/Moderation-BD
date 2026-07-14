@@ -6,7 +6,7 @@ from discord import app_commands
 from discord.ext import commands
 from discord.utils import get
 
-from ..models import GuildConfig, Warning
+from ..models import ModerationConfig, Warning
 
 if TYPE_CHECKING:
     from ballsdex.core.bot import BallsDexBot
@@ -102,7 +102,7 @@ class Moderation(commands.Cog):
                 "You can't mute this member due to role hierarchy.", ephemeral=True
             )
 
-        config, _ = await GuildConfig.objects.aget_or_create(guild_id=interaction.guild.id)
+        config, _ = await ModerationConfig.objects.aget_or_create(guild_id=interaction.guild.id)
         muted_role = None
 
         if config.muted_role_id:
@@ -125,7 +125,7 @@ class Moderation(commands.Cog):
         if not interaction.user.guild_permissions.manage_roles:
             return await interaction.response.send_message("You don't have permission to manage roles.", ephemeral=True)
 
-        config = await GuildConfig.objects.filter(guild_id=interaction.guild.id).afirst()
+        config = await ModerationConfig.objects.filter(guild_id=interaction.guild.id).afirst()
         muted_role = None
 
         if config and config.muted_role_id:
@@ -145,7 +145,7 @@ class Moderation(commands.Cog):
         if not interaction.user.guild_permissions.manage_roles:
             return await interaction.response.send_message("You don't have permission to manage roles.", ephemeral=True)
 
-        config, _ = await GuildConfig.objects.aget_or_create(guild_id=interaction.guild.id)
+        config, _ = await ModerationConfig.objects.aget_or_create(guild_id=interaction.guild.id)
         config.muted_role_id = role.id
         await config.asave()
         await interaction.response.send_message(f"Muted role set to {role.mention}.")

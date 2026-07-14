@@ -18,9 +18,9 @@ class Warning(models.Model):
         return f"Warning(guild={self.guild_id}, user={self.user_id}, reason={self.reason!r})"
 
 
-class GuildConfig(models.Model):
+class ModerationConfig(models.Model):
     guild_id = models.BigIntegerField(unique=True)
     muted_role_id = models.BigIntegerField(null=True, blank=True)
 
     def __str__(self):
-        return f"GuildConfig(guild={self.guild_id}, muted_role={self.muted_role_id})"
+        return f"ModerationConfig(guild={self.guild_id}, muted_role={self.muted_role_id})"
