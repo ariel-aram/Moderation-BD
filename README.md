@@ -45,7 +45,7 @@ Add the following to your `config/extra.toml`:
 
 ```toml
 [[ballsdex.packages]]
-location = "git+https://github.com/aramhosting/Moderation-BD.git@1.1.0-patch"
+location = "git+https://github.com/aramhosting/Moderation-BD.git@1.1.1"
 path = "moderation_app"
 enabled = true
 ```
