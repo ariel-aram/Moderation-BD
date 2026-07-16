@@ -1,0 +1,53 @@
+[project]
+name = "arampacks-bdv3"
+version = "1.0.0"
+description = "Ariel Aram's formidable list of extras a.k.a packages for Ballsdex v3."
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "discord-py<2.7.1",
+    "django==6.0.0",
+    "django-types>=0.24.0",
+    "pyright>=1.1.411",
+    "ruff>=0.15.21",
+    "ballsdex>=3.1.0",
+]
+
+[tool.uv.sources]
+ballsdex = { git = "https://github.com/Ballsdex-Team/BallsDex-DiscordBot.git", branch = "v3" }
+
+[tool.ruff]
+line-length = 120
+indent-width = 4
+target-version = "py314"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W"]
+ignore = ["E203"]
+
+[tool.ruff.lint.isort]
+split-on-trailing-comma = false
+
+[tool.ruff.lint.per-file-ignores]
+"extra/*/migrations/*" = ["E501"]
+
+[tool.pyright]
+typeCheckingMode = "standard"
+include = ["extra"]
+exclude = [
+    "**/node_modules",
+    "**/__pycache__",
+    "**/.git",
+    "**/.venv",
+    "**/migrations",
+]
+venvPath = "."
+venv = ".venv"
+pythonVersion = "3.14"
+pythonPlatform = "All"
+reportMissingImports = true
+reportMissingTypeStubs = false
+reportPrivateImportUsage = false
+reportUnnecessaryTypeIgnoreComment = true
+reportIncompatibleMethodOverride = "warning"
+reportIncompatibleVariableOverride = "warning"
