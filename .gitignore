@@ -1,10 +1,22 @@
-# Python-generated files
+# Python stuff
+*.pyc
 __pycache__/
-*.py[oc]
-build/
+*.egg-info/
 dist/
-wheels/
-*.egg-info
+build/
+*.egg
 
 # Virtual environments
-.venv
+.venv/
+venv/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Ruff
+.ruff_cache/
